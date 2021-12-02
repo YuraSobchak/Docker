@@ -1,6 +1,10 @@
 const express = require('express');
+const {connectDb} = require('./helpers/db');
+const {port} = require('./config');
 const app = express();
-const port = process.env.PORT;
+
+const db = connectDb();
+console.log(db);
 
 app.get('/', (req, res) => {
 	res.send("Our api server is working");
