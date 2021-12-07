@@ -3,14 +3,36 @@ version: '3.8'
 services:
     api:
         build: ./api
+        container_name: docker-api
         command: npm run start
+        volumes:
+            - ./api/src:/usr/src/app/src
         ports:
-            - 3000:3000
+            - 3001:3001
         environment:
             - PORT=3000
             - MONGO_URL=mongodb://api_db:27017/api
         depends_on:
             - api_db
 
-    api_db:
-        image: mongo:latest
+    frontend:
+        build: ./frontend
+        container_name: docker-frontend
+        command: serve -s build -l 3000
+#        volumes:
+#            - ./frontend/src:/usr/src/app/src
+#        ports:
+#            - 3000:3000
+        restart: unless-stopped
+#        stdin_open: true
+#        tty: true
+
+    nginx:
+        image: nginx:stable-alpine
+        container_name: docker-nginx
+        ports:
+            - 80:80
+        volumes:
+            - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
+        depends_on:
+            - frontend
