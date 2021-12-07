@@ -14,6 +14,8 @@ services:
             - MONGO_URL=mongodb://api_db:27017/api
         depends_on:
             - api_db
+        networks:
+            - docker-network
 
     frontend:
         build: ./frontend
@@ -26,6 +28,8 @@ services:
         restart: unless-stopped
 #        stdin_open: true
 #        tty: true
+        networks:
+            - docker-network
 
     nginx:
         image: nginx:stable-alpine
@@ -36,3 +40,9 @@ services:
             - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
         depends_on:
             - frontend
+        networks:
+            - docker-network
+
+networks:
+    docker-network:
+        driver: bridge
